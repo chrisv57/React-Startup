@@ -26,14 +26,31 @@ const list = [
     objectID: 1,
   },
 ]
-
-function App() {
-  return (
+function App(){
+  return(
     <div>
       <h1>Hey {getTitle('React')}</h1>
+    
+    <Search />
+    <hr />
+    <List />
+    </div>
+    
+  );
+}
+
+function Search(){
+  return(
+    <div>
       <label htmlFor='search'>Search: </label>
-      <input id="search" type="search" />
-      <hr />
+      <input id ="search" type="text"/>
+    </div>
+  )
+}
+
+function List() {
+  return (
+    <div>
       {/* list rendeirng*/}
       <ul>
         {list.map(function (item) {
@@ -47,7 +64,7 @@ function App() {
                <span>{item.points}</span>
                <span>{null}</span>
              </li>
-           )
+           );
         })}
       </ul>
     </div>
