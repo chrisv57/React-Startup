@@ -33,7 +33,10 @@ function App(){
     
     <Search />
     <hr />
+    
     <List />
+   {/* Two instances of List component */}
+    <List/>
     </div>
     
   );
@@ -48,6 +51,7 @@ function Search(){
   )
 }
 
+//definiton of list component
 function List() {
   return (
     <div>
