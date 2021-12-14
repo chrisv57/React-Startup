@@ -26,8 +26,8 @@ const list = [
     objectID: 1,
   },
 ]
-function App(){
-  return(
+const App = () =>
+  (
     <div>
       <h1>Hey {getTitle('React')}</h1>
     
@@ -40,24 +40,23 @@ function App(){
     </div>
     
   );
-}
 
-function Search(){
-  return(
+const Search = () =>
+  (
     <div>
       <label htmlFor='search'>Search: </label>
       <input id ="search" type="text"/>
     </div>
-  )
-}
+  );
 
 //definiton of list component
-function List() {
+const List = () =>{
+  //peform a task in between
   return (
     <div>
       {/* list rendeirng*/}
       <ul>
-        {list.map(function (item) {
+        {list.map((item) => {
            return(
              <li key = {item.objectID}>
                <span>
