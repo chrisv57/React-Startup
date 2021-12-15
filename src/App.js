@@ -8,75 +8,68 @@ import * as React from 'react'
 function getTitle(title) {
   return title;
 }
-const list = [
-  {
-    title: 'React',
-    url: 'https://reactjs/org/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-]
-const App = () =>
-  (
+const App = () => {
+  const stories = [
+    {
+      title: 'React',
+      url: 'https://reactjs.org/',
+      author: 'Jordan Walke',
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: 'Redux',
+      url: 'https://redux.js.org/',
+      author: 'Dan Abramov, Andrew Clark',
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
+  return (
     <div>
       <h1>Hey {getTitle('React')}</h1>
-    
-    <Search />
-    <hr />
-    
-    <List />
-   {/* Two instances of List component */}
-    <List/>
-    </div>
-    
-  );
 
-const Search = () =>{
+      <Search />
+      <hr />
+
+      <List list={stories} />
+
+    </div>
+
+  );
+};
+
+const Search = () => {
   // React’s synthetic event
-  const handleChange = (event) =>{
+  const handleChange = (event) => {
     console.log(event.target.value);
   };
   return (
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id ="search" type="text" onChange={handleChange}/>
+      <input id="search" type="text" onChange={handleChange} />
     </div>
   );
-  };
+};
 
-//definiton of list component
-const List = () =>{
-  //peform a task in between
-  return (
-    <div>
-      {/* list rendeirng*/}
-      <ul>
-        {list.map((item) => {
-           return(
-             <li key = {item.objectID}>
-               <span>
-                 <a href={item.url}>{item.title} </a>
-               </span>
-               <span>{item.author}</span>
-               <span>{item.num_comments}</span>
-               <span>{item.points}</span>
-               <span>{null}</span>
-             </li>
-           );
-        })}
-      </ul>
-    </div>
-  )
-}
-
+//React Props
+const List = (props) => (
+  <ul>
+    {props.list.map((item) => (
+      <Item key={item.objectID} item={item} />
+    ))}
+  </ul>
+);
+const Item = (props) => (
+  <li>
+    <span>
+      <a href={props.item.url}>{props.item.title}</a>
+    </span>
+    <span>{props.item.author}</span>
+    <span>{props.item.num_comments}</span>
+    <span>{props.item.points}</span>
+  </li>
+)
 export default App;
