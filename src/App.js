@@ -27,7 +27,9 @@ const App = () => {
       objectID: 1,
     },
   ];
+  
   return (
+    
     <div>
       <h1>Hey {getTitle('React')}</h1>
 
@@ -35,21 +37,29 @@ const App = () => {
       <hr />
 
       <List list={stories} />
-
     </div>
 
   );
 };
 
 const Search = () => {
+  //Defining a initial state(empty String) using useState
+//   The first entry (searchTerm)
+// represents the current state; the second entry is a function to update this state (setSearchTerm).
+  const [searchTerm, setSearchTerm] = React.useState('');
   // React’s synthetic event
   const handleChange = (event) => {
-    console.log(event.target.value);
+    setSearchTerm(event.target.value);
   };
+  
   return (
     <div>
       <label htmlFor='search'>Search: </label>
       <input id="search" type="text" onChange={handleChange} />
+
+      <p>
+        Searching for <b>{searchTerm}</b>
+      </p>
     </div>
   );
 };
