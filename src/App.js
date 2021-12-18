@@ -1,10 +1,4 @@
 import * as React from 'react'
-
-// const welcome= {
-//   greeting: 'Hey',
-//   title: 'Mars and Reaact',
-// };
-
 function getTitle(title) {
   return title;
 }
@@ -27,56 +21,51 @@ const App = () => {
       objectID: 1,
     },
   ];
-  
-//A callback function gets introduced
-const handleSearch = (event)=>{
-  // C “calls back” to the place it was introduced.
-  console.log(event.target.value);
-}
+
+  // Defining the stateFunction here so that we can access the searchTerm to filter the list by title.
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+
+  const handleSearch = (event) => {
+
+    setSearchTerm(event.target.value);
+  }
+
+  //This fucntion is used to filter the list using the searchTerm 
+  // const searchedStories = stories.filter(function (story){
+  //   return story.title.includes(searchTerm);
+  // });
+
+  const searchedStories = stories.filter((story)=>
+  story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    
+
     <div>
       <h1>Hey {getTitle('React')}</h1>
 
       {/* <Search /> */}
       <hr />
+      <Search onSearch={handleSearch} />
 
-      {/* is used elsewhere (B), */}
-      {/* onSearch is a callback function here */}
-      <Search onSearch ={handleSearch}/>
-      <List list={stories} />
+      <hr/>
+      <List list={searchedStories} />
     </div>
 
   );
 };
 
-const Search = (props) => {
-  //Defining a initial state(empty String) using useState
-//   The first entry (searchTerm)
-// represents the current state; the second entry is a function to update this state (setSearchTerm).
-  const [searchTerm, setSearchTerm] = React.useState('');
-  // React’s synthetic event
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-    
-    // B is used somewhere else.
-    props.onSearch(event);
-    // Calling onSearch(callbackFunction which is in it's Parent App()Component) using props 
-  };
-  
-  
-  return (
+const Search = (props) => (
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id="search" type="text" onChange={handleChange} />
+      <input id="search" type="text" onChange={props.onSearch} />
 
       <p>
-        Searching for <b>{searchTerm}</b>
+        {/* Searching for <b>{props.searchTerm}</b> */}
       </p>
     </div>
-  );
-};
+)
 
 //React Props
 const List = (props) => (
