@@ -28,21 +28,30 @@ const App = () => {
     },
   ];
   
+//A callback function gets introduced
+const handleSearch = (event)=>{
+  // C “calls back” to the place it was introduced.
+  console.log(event.target.value);
+}
+
   return (
     
     <div>
       <h1>Hey {getTitle('React')}</h1>
 
-      <Search />
+      {/* <Search /> */}
       <hr />
 
+      {/* is used elsewhere (B), */}
+      {/* onSearch is a callback function here */}
+      <Search onSearch ={handleSearch}/>
       <List list={stories} />
     </div>
 
   );
 };
 
-const Search = () => {
+const Search = (props) => {
   //Defining a initial state(empty String) using useState
 //   The first entry (searchTerm)
 // represents the current state; the second entry is a function to update this state (setSearchTerm).
@@ -50,7 +59,12 @@ const Search = () => {
   // React’s synthetic event
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
+    
+    // B is used somewhere else.
+    props.onSearch(event);
+    // Calling onSearch(callbackFunction which is in it's Parent App()Component) using props 
   };
+  
   
   return (
     <div>
