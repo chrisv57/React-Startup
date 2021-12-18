@@ -23,7 +23,7 @@ const App = () => {
   ];
 
   // Defining the stateFunction here so that we can access the searchTerm to filter the list by title.
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState('React');
 
 
   const handleSearch = (event) => {
@@ -47,7 +47,7 @@ const App = () => {
 
       {/* <Search /> */}
       <hr />
-      <Search onSearch={handleSearch} />
+      <Search search = {searchTerm} onSearch={handleSearch} />
 
       <hr/>
       <List list={searchedStories} />
@@ -59,11 +59,7 @@ const App = () => {
 const Search = (props) => (
     <div>
       <label htmlFor='search'>Search: </label>
-      <input id="search" type="text" onChange={props.onSearch} />
-
-      <p>
-        {/* Searching for <b>{props.searchTerm}</b> */}
-      </p>
+      <input id="search" type="text" value={props.search} onChange={props.onSearch} />
     </div>
 )
 
