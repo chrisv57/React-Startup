@@ -24,7 +24,7 @@ const App = () => {
 
   // Defining the stateFunction here so that we can access the searchTerm to filter the list by title.
   const [searchTerm, setSearchTerm] = React.useState(
-    localStorage.getItem('search') || 'React'
+    localStorage.getItem('search') ?? 'React'
   );
 
 //   //We’ll use React’s useEffect Hook to trigger
@@ -33,7 +33,6 @@ const App = () => {
     localStorage.setItem('search', searchTerm);
   }, [searchTerm]
   );
-
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
