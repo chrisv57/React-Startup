@@ -2,6 +2,17 @@ import * as React from 'react'
 function getTitle(title) {
   return title;
 }
+
+const useSemiPersistentState =(key,initalState)=>{
+  const[value,setValue] = React.useState(
+    localStorage.getItem(key) || initalState
+  );
+  React.useEffect(()=>{
+    localStorage.setItem(key,value);
+  },[value.key]);
+  return [value,setValue];
+};
+
 const App = () => {
   const stories = [
     {
@@ -22,17 +33,10 @@ const App = () => {
     },
   ];
 
-  // Defining the stateFunction here so that we can access the searchTerm to filter the list by title.
-  const [searchTerm, setSearchTerm] = React.useState(
-    localStorage.getItem('search') ?? 'React'
-  );
+  const [searchTerm, setSearchTerm] = useSemiPersistentState(
+    'search','React'
+    );
 
-//   //We’ll use React’s useEffect Hook to trigger
-// the side-effect each time the searchTerm changes:
-  React.useEffect(() => {
-    localStorage.setItem('search', searchTerm);
-  }, [searchTerm]
-  );
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
