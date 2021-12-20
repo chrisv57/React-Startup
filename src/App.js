@@ -36,8 +36,8 @@ const App = () => {
   //   return story.title.includes(searchTerm);
   // });
 
-  const searchedStories = stories.filter((story)=>
-  story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedStories = stories.filter((story) =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -47,9 +47,9 @@ const App = () => {
 
       {/* <Search /> */}
       <hr />
-      <Search search = {searchTerm} onSearch={handleSearch} />
+      <Search search={searchTerm} onSearch={handleSearch} />
 
-      <hr/>
+      <hr />
       <List list={searchedStories} />
     </div>
 
@@ -57,36 +57,34 @@ const App = () => {
 };
 
 //We Completely removed the props by add the prop object properties to the function signature.
-const Search = ({search,onSearch}) => (
-    <div>
-      <label htmlFor='search'>Search: </label>
-      <input
-        id="search"
-        type="text"
-        value={search}
-        onChange={onSearch}
-        />
-    </div>
-    );
+const Search = ({ search, onSearch }) => (
+  <div>
+    <label htmlFor='search'>Search: </label>
+    <input
+      id="search"
+      type="text"
+      value={search}
+      onChange={onSearch}
+    />
+  </div>
+);
 
-//React Props
-const List = ({list}) => (
+//USing Spread and Rest Operators
+const List = ({ list }) => (
   <ul>
-    {list.map((item) => (
-      <Item key={item.objectID} item={item} />
+    {list.map((objectID, ...item) => (
+      <Item key={objectID} {...item} />
     ))}
   </ul>
 );
 
-//Nested Destruction
+//Nested Destruction 
 const Item = ({
-  item:{
-    title,
-    url,
-    author,
-    num_comments,
-    points,
-  },
+  title,
+  url,
+  author,
+  num_comments,
+  points
 }) => (
   <li>
     <span>
