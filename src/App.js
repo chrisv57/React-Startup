@@ -3,14 +3,14 @@ function getTitle(title) {
   return title;
 }
 
-const useSemiPersistentState =(key,initalState)=>{
-  const[value,setValue] = React.useState(
+const useSemiPersistentState = (key, initalState) => {
+  const [value, setValue] = React.useState(
     localStorage.getItem(key) || initalState
   );
-  React.useEffect(()=>{
-    localStorage.setItem(key,value);
-  },[value.key]);
-  return [value,setValue];
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value.key]);
+  return [value, setValue];
 };
 
 const App = () => {
@@ -34,8 +34,8 @@ const App = () => {
   ];
 
   const [searchTerm, setSearchTerm] = useSemiPersistentState(
-    'search','React'
-    );
+    'search', 'React'
+  );
 
 
   const handleSearch = (event) => {
@@ -58,7 +58,12 @@ const App = () => {
 
       {/* <Search /> */}
       <hr />
-      <Search search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel
+        id="search"
+        label="Search"
+        value={searchTerm}
+        onInputChange={handleSearch}
+      />
 
       <hr />
       <List list={searchedStories} />
@@ -68,14 +73,15 @@ const App = () => {
 };
 
 //We Completely removed the props by add the prop object properties to the function signature.
-const Search = ({ search, onSearch }) => (
+const InputWithLabel = ({ id,label,value,type='text',onInputChange }) => (
   <>
-    <label htmlFor='search'>Search: </label>
+    <label htmlFor={id}>{label}: </label>
+    &nbsp;
     <input
-      id="search"
-      type="text"
-      value={search}
-      onChange={onSearch}
+      id={id}
+      type={type}
+      value={value}
+      onChange={onInputChange}
     />
   </>
 );
