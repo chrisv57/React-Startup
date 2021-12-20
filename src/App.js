@@ -69,7 +69,7 @@ const App = () => {
 
 //We Completely removed the props by add the prop object properties to the function signature.
 const Search = ({ search, onSearch }) => (
-  <div>
+  <>
     <label htmlFor='search'>Search: </label>
     <input
       id="search"
@@ -77,7 +77,7 @@ const Search = ({ search, onSearch }) => (
       value={search}
       onChange={onSearch}
     />
-  </div>
+  </>
 );
 
 //USing Spread and Rest Operators
