@@ -23,11 +23,19 @@ const App = () => {
   ];
 
   // Defining the stateFunction here so that we can access the searchTerm to filter the list by title.
-  const [searchTerm, setSearchTerm] = React.useState('React');
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem('search') || 'React'
+  );
+
+//   //We’ll use React’s useEffect Hook to trigger
+// the side-effect each time the searchTerm changes:
+  React.useEffect(() => {
+    localStorage.setItem('search', searchTerm);
+  }, [searchTerm]
+  );
 
 
   const handleSearch = (event) => {
-
     setSearchTerm(event.target.value);
   }
 
@@ -72,27 +80,21 @@ const Search = ({ search, onSearch }) => (
 //USing Spread and Rest Operators
 const List = ({ list }) => (
   <ul>
-    {list.map((objectID, ...item) => (
-      <Item key={objectID} {...item} />
+    {list.map((item) => (
+      <Item key={item.objectID} item={item} />
     ))}
   </ul>
 );
 
 //Nested Destruction 
-const Item = ({
-  title,
-  url,
-  author,
-  num_comments,
-  points
-}) => (
+const Item = ({ item }) => (
   <li>
     <span>
-      <a href={url}>{title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{author}</span>
-    <span>{num_comments}</span>
-    <span>{points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 )
 export default App;
