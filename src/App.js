@@ -56,10 +56,8 @@ const App = () => {
   );
 };
 
-const Search = (props) => {
-// destruction of props object
-  const {search,onSearch} = props;
-    return(
+//We Completely removed the props by add the prop object properties to the function signature.
+const Search = ({search,onSearch}) => (
     <div>
       <label htmlFor='search'>Search: </label>
       <input
@@ -70,7 +68,6 @@ const Search = (props) => {
         />
     </div>
     );
-};
 
 //React Props
 const List = (props) => (
