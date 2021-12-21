@@ -61,6 +61,7 @@ const App = () => {
       <InputWithLabel
         id="search"
         value={searchTerm}
+        isFocused
         onInputChange={handleSearch}
       >
       <strong>Search:</strong>
@@ -73,8 +74,8 @@ const App = () => {
   );
 };
 
-//We Completely removed the props by add the prop object properties to the function signature.
-const InputWithLabel = ({ id,label,value,type='text',onInputChange,children }) => (
+// Declarative Implementation of autofocus for the inputField
+const InputWithLabel = ({ id,label,value,type='text',onInputChange,isFocused,children }) => (
   <>
     <label htmlFor={id}>{children}</label>
     &nbsp;
@@ -82,6 +83,7 @@ const InputWithLabel = ({ id,label,value,type='text',onInputChange,children }) =
       id={id}
       type={type}
       value={value}
+      autoFocus={isFocused}
       onChange={onInputChange}
     />
   </>
