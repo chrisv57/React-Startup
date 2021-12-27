@@ -31,12 +31,12 @@ const initalStories = [
   },
 ];
 
-const getAsyncStories = () => 
-  new Promise((resolve)=>
-  setTimeout(
-    ()=>resolve({data:{stories:initalStories}}),
-    2000
-  )
+const getAsyncStories = () =>
+  new Promise((resolve) =>
+    setTimeout(
+      () => resolve({ data: { stories: initalStories } }),
+      2000
+    )
   );
 
 const App = () => {
@@ -46,12 +46,22 @@ const App = () => {
   );
 
   const [stories, setStories] = React.useState([]);
+  //Conditional Redenring: Setting a loading interface to let the users know about the loading of the data
+  const [isLoading, setisLoading] = React.useState(false);
 
-  React.useEffect(()=>{
-    getAsyncStories().then(result =>{
+  const [isError, setisError] = React.useState(false);
+
+  React.useEffect(() => {
+    setisLoading(true);
+
+    getAsyncStories().then(result => {
       setStories(result.data.stories);
-    });
-  },[]);
+      setisLoading(false);
+    })
+
+      //Providing a catch to the promise in case something went wrong while fethcing data.
+      .catch(() => setisError(true));
+  }, []);
 
   const handleRemoveStory = (item) => {
     const newStories = stories.filter(
@@ -90,7 +100,16 @@ const App = () => {
       </InputWithLabel>
 
       <hr />
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+
+      {/* In JavaScript, a true && 'Hello World' always evaluates to ‘Hello World’. A false && 'Hello World'
+always evaluates to false. */}
+      {isError && <p>Something went wrong....</p>}
+      {isLoading ? (
+        <p>Loading....</p>
+      ) : (
+        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      )}
+
     </div>
 
   );
@@ -128,8 +147,8 @@ const List = ({ list, onRemoveItem }) => (
         key={item.objectID}
         item={item}
         onRemoveItem={onRemoveItem}
-          
-        />
+
+      />
     ))}
   </ul>
 );
