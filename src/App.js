@@ -40,12 +40,30 @@ const getAsyncStories = () =>
   );
 const storiesReducer = (state, action) => {
   switch (action.type) {
-    case 'SET_STORIES':
-      return action.payload;
+    case 'STORIES_FETCH_INIT':
+      return {
+        ...state,isLoading:true,isError:false,
+      };
+      case 'STORIES_FETCH_SUCCESS':
+      return {
+        ...state,
+        isLoading:false,
+        isError:false,
+        data: action.payload,
+      };
+      case 'STORIES_FETCH_FAILURE':
+        return {
+          ...state,
+          isLoading:false,
+          isError:true,
+        };
     case 'REMOVE_STORY':
-      return state.filter(
-        (story) => action.payload.objectID !== story.objectID
-      );
+      return{
+        ...state,
+        data: state.data.filter(
+          (story)=>action.payload.objectID !== story.objectID
+        ),
+      };
     default:
       throw new Error();
   }
@@ -56,32 +74,34 @@ const App = () => {
     'search', 'React'
   );
 
-
+//Merging states using useReducer hook
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
-    []
+    {data:[],isLoading:false,isError:false}
   );
 
 
-  //Conditional Redenring: Setting a loading interface to let the users know about the loading of the data
-  const [isLoading, setisLoading] = React.useState(false);
+  // //Conditional Redenring: Setting a loading interface to let the users know about the loading of the data
+  // const [isLoading, setisLoading] = React.useState(false);
 
-  const [isError, setisError] = React.useState(false);
+  // const [isError, setisError] = React.useState(false);
 
   React.useEffect(() => {
-    setisLoading(true);
+    
+    dispatchStories({type:'STORIES_FETCH_INIT'});
 
-    getAsyncStories().then(result => {
+    getAsyncStories()
+    .then(result => {
       dispatchStories({
-        type: 'SET_STORIES',
+        type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.stories,
       });
-      setisLoading(false);
     })
 
       //Providing a catch to the promise in case something went wrong while fethcing data.
-      .catch(() => setisError(true));
-  }, []);
+      .catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'})
+   );
+   }, []);
 
   const handleRemoveStory = (item) => {
     dispatchStories({
@@ -99,7 +119,7 @@ const App = () => {
   //   return story.title.includes(searchTerm);
   // });
 
-  const searchedStories = stories.filter((story) =>
+  const searchedStories = stories.data.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -123,8 +143,8 @@ const App = () => {
 
       {/* In JavaScript, a true && 'Hello World' always evaluates to ‘Hello World’. A false && 'Hello World'
 always evaluates to false. */}
-      {isError && <p>Something went wrong....</p>}
-      {isLoading ? (
+      {stories.isError && <p>Something went wrong....</p>}
+      {stories.isLoading ? (
         <p>Loading....</p>
       ) : (
         <List list={searchedStories} onRemoveItem={handleRemoveStory} />
