@@ -3,6 +3,8 @@ function getTitle(title) {
   return title;
 };
 
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 const useSemiPersistentState = (key, initalState) => {
   const [value, setValue] = React.useState(
     localStorage.getItem(key) || initalState
@@ -48,7 +50,7 @@ const storiesReducer = (state, action) => {
 };
 
 //A
-const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 
 const App = () => {
 
@@ -92,15 +94,6 @@ const App = () => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   }
-
-  //This fucntion is used to filter the list using the searchTerm 
-  // const searchedStories = stories.filter(function (story){
-  //   return story.title.includes(searchTerm);
-  // });
-
-  const searchedStories = stories.data.filter((story) =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
 
