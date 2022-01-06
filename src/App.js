@@ -55,6 +55,10 @@ const App = () => {
     'search', 'React'
   );
 
+  const [url,setUrl] = React.useState(
+    `${API_ENDPOINT}${searchTerm}`
+  );
+
   //Merging states using useReducer hook
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
@@ -62,12 +66,10 @@ const App = () => {
   );
 
   const handleFetchStories = React.useCallback(() => {
-    if (!searchTerm) return;
-
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
     // Template Literal is used 
-    fetch(`${API_ENDPOINT}${searchTerm}`)  //B
+    fetch(url)  //B
       .then((response) => response.json()) //C
       .then((result) => {
         dispatchStories({
@@ -79,7 +81,7 @@ const App = () => {
       //Providing a catch to the promise in case something went wrong while fethcing data.
       .catch(() => dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
       );
-  }, [searchTerm]);
+  }, [url]);
   React.useEffect(() => {
     handleFetchStories();
     }, [handleFetchStories]);
@@ -96,6 +98,14 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
+  const handleSearchInput=(event) =>{
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearchSubmit=()=>{
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
+  };
+
   return (
 
     <div>
@@ -107,11 +117,17 @@ const App = () => {
         id="search"
         value={searchTerm}
         isFocused
-        onInputChange={handleSearch}
+        onInputChange={handleSearchInput}
       >
         <strong>Search:</strong>
       </InputWithLabel>
-
+      <button
+        type="button"
+        disabled={!searchTerm}
+        onClick={handleSearchSubmit}
+        >
+        Submit
+        </button>
       <hr />
 
       {/* In JavaScript, a true && 'Hello World' always evaluates to ‘Hello World’. A false && 'Hello World'
