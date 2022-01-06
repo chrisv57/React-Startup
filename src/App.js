@@ -1,4 +1,6 @@
 import * as React from 'react'
+import axios from 'axios'
+
 function getTitle(title) {
   return title;
 };
@@ -69,12 +71,12 @@ const App = () => {
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
     // Template Literal is used 
-    fetch(url)  //B
-      .then((response) => response.json()) //C
+    axios
+    .get(url)  
       .then((result) => {
         dispatchStories({
           type: 'STORIES_FETCH_SUCCESS',
-          payload: result.hits, //D
+          payload: result.data.hits, 
         });
       })
 
@@ -94,9 +96,9 @@ const App = () => {
     });
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  }
+  // const handleSearch = (event) => {
+  //   setSearchTerm(event.target.value);
+  // }
 
   const handleSearchInput=(event) =>{
     setSearchTerm(event.target.value);
