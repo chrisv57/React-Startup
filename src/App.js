@@ -15,33 +15,30 @@ const useSemiPersistentState = (key, initalState) => {
   return [value, setValue];
 };
 
-
-
-
 const storiesReducer = (state, action) => {
   switch (action.type) {
     case 'STORIES_FETCH_INIT':
       return {
-        ...state,isLoading:true,isError:false,
+        ...state, isLoading: true, isError: false,
       };
-      case 'STORIES_FETCH_SUCCESS':
+    case 'STORIES_FETCH_SUCCESS':
       return {
         ...state,
-        isLoading:false,
-        isError:false,
+        isLoading: false,
+        isError: false,
         data: action.payload,
       };
-      case 'STORIES_FETCH_FAILURE':
-        return {
-          ...state,
-          isLoading:false,
-          isError:true,
-        };
+    case 'STORIES_FETCH_FAILURE':
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
     case 'REMOVE_STORY':
-      return{
+      return {
         ...state,
         data: state.data.filter(
-          (story)=>action.payload.objectID !== story.objectID
+          (story) => action.payload.objectID !== story.objectID
         ),
       };
     default:
@@ -58,31 +55,35 @@ const App = () => {
     'search', 'React'
   );
 
-//Merging states using useReducer hook
+  //Merging states using useReducer hook
   const [stories, dispatchStories] = React.useReducer(
     storiesReducer,
-    {data:[],isLoading:false,isError:false}
+    { data: [], isLoading: false, isError: false }
   );
 
-  React.useEffect(() => {
-    if(!searchTerm) return;
-    
-    dispatchStories({type:'STORIES_FETCH_INIT'});
+  const handleFetchStories = React.useCallback(() => {
+    if (!searchTerm) return;
+
+    dispatchStories({ type: 'STORIES_FETCH_INIT' });
 
     // Template Literal is used 
     fetch(`${API_ENDPOINT}${searchTerm}`)  //B
-    .then((response) => response.json()) //C
-    .then((result) => {
-      dispatchStories({
-        type: 'STORIES_FETCH_SUCCESS',
-        payload: result.hits, //D
-      });
-    })
+      .then((response) => response.json()) //C
+      .then((result) => {
+        dispatchStories({
+          type: 'STORIES_FETCH_SUCCESS',
+          payload: result.hits, //D
+        });
+      })
 
       //Providing a catch to the promise in case something went wrong while fethcing data.
-      .catch(() => dispatchStories({type: 'STORIES_FETCH_FAILURE'})
-   );
-   }, [searchTerm]);
+      .catch(() => dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+      );
+  }, [searchTerm]);
+  React.useEffect(() => {
+    handleFetchStories();
+    }, [handleFetchStories]);
+
 
   const handleRemoveStory = (item) => {
     dispatchStories({
