@@ -1,74 +1,8 @@
 import * as React from "react";
 import axios from "axios";
 
-import styled from "styled-components";
-import {ReactComponent as Cross} from './cross.svg';
-const StyledContainer = styled.div`
-height: 100vw;
-padding: 20px;
-background: #83a4d4;
-background: linear-gradient(to left, #b6fbff, #83a4d4);
-color: #171212;
-`;
-const StyledHeadlinePrimary = styled.h1`
-font-size: 48px;
-font-weight: 300;
-letter-spacing: 2px;
-`;
-const StyledItem = styled.li`
-display: flex;
-align-items: center;
-padding-bottom: 5px;
-`;
-const StyledColumn = styled.span`
-padding: 0 5px;
-white-space: nowrap;
-overflow: hidden;
-white-space: nowrap;
-text-overflow: ellipsis;
-a {
-color: inherit;
-}
-width: ${(props) => props.width};
-`;
-const StyledButton = styled.button`
-background: transparent;
-border: 1px solid #171212;
-padding: 5px;
-cursor: pointer;
-transition: all 0.1s ease-in;
-&:hover {
-background: #171212;
-color: #ffffff;
-}
-&:hover > svg > g{
-  fill: #ffffff;
-  stroke: #ffffff;
-}
-`;
-const StyledButtonSmall = styled(StyledButton)`
-padding: 5px;
-`;
-const StyledButtonLarge = styled(StyledButton)`
-padding: 10px;
-`;
-const StyledSearchForm = styled.form`
-padding: 10px 0 20px 0;
-display: flex;
-align-items: baseline;
-`;
-const StyledLabel = styled.label`
-border-top: 1px solid #171212;
-border-left: 1px solid #171212;
-padding-left: 5px;
-font-size: 24px;
-`;
-const StyledInput = styled.input`
-border: none;
-border-bottom: 1px solid #171212;
-background-color: transparent;
-font-size: 24px;
-`;
+import './App.css';
+import { ReactComponent as Cross } from "./cross.svg";
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
@@ -168,8 +102,8 @@ const App = () => {
 
 
   return (
-    <StyledContainer>
-      <StyledHeadlinePrimary>Hello React</StyledHeadlinePrimary>
+    <div className="container">
+      <h1 className="headline-primary">Hello React</h1>
 
       {/* <Search /> */}
       <SearchForm
@@ -185,7 +119,7 @@ always evaluates to false. */}
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-    </StyledContainer>
+    </div>
   );
 };
 const SearchForm = ({
@@ -193,7 +127,7 @@ const SearchForm = ({
   onSearchInput,
   onSearchSubmit,
 }) => (
-  <StyledSearchForm onSubmit={onSearchSubmit}>
+  <form onSubmit={onSearchSubmit} className="search-form">
 
     <InputWithLabel
       id="search"
@@ -203,12 +137,13 @@ const SearchForm = ({
     >
       <strong>Search:</strong>
     </InputWithLabel>
-    <StyledButtonLarge type="submit" disabled={!searchTerm}
+    <button type="submit" disabled={!searchTerm}
+      className="button button_large"
     >
       Submit
-    </StyledButtonLarge>
+    </button>
 
-  </StyledSearchForm>
+  </form>
 
 );
 
@@ -232,17 +167,20 @@ const InputWithLabel = ({
   }, [isFocused]);
   return (
     <>
-      <StyledLabel
-        htmlFor={id}>
+      <label
+        htmlFor={id}
+        className="label"
+      >
         {children}
-      </StyledLabel>
+      </label>
       &nbsp;
-      <StyledInput
+      <input
         ref={inputRef}
         id={id}
         type={type}
         value={value}
         onChange={onInputChange}
+        className="input"
       />
     </>
   );
@@ -260,22 +198,23 @@ const List = ({ list, onRemoveItem }) => (
 //Nested Destruction
 const Item = ({ item, onRemoveItem }) => {
   return (
-    <StyledItem>
-      <StyledColumn width = "40%">
+    <li className="item">
+      <span style={{ width: '40%' }}>
         <a href={item.url}>{item.title}</a>
-      </StyledColumn>
-      <StyledColumn width = "30%">{item.author}</StyledColumn>
-      <StyledColumn width = "10%">{item.num_comments}</StyledColumn>
-      <StyledColumn width = "10%">{item.points}</StyledColumn>
-      <StyledColumn width = "10%">
-        <StyledButtonSmall
+      </span>
+      <span style={{ width: '30%' }}>{item.author}</span>
+      <span style={{ width: '10%' }}>{item.num_comments}</span>
+      <span style={{ width: '10%' }}>{item.points}</span>
+      <span style={{ width: '10%' }}>
+        <button
           type="button"
           onClick={() => onRemoveItem(item)}
+          className="button button_small"
         >
-          <Cross height="18px" width="18px" />
-        </StyledButtonSmall>
-      </StyledColumn>
-    </StyledItem>
+         <Cross height="18px" width="18px" />
+        </button>
+      </span>
+    </li>
   );
 };
 export default App;
