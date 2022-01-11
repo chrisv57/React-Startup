@@ -7,11 +7,17 @@ import { ReactComponent as Cross } from "./cross.svg";
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const useSemiPersistentState = (key, initalState) => {
+  const isMounted = React.useRef(false);
   const [value, setValue] = React.useState(
     localStorage.getItem(key) || initalState
   );
   React.useEffect(() => {
+    if(!isMounted.current){
+      isMounted.current=true;
+    }else{
+    console.log("A");
     localStorage.setItem(key, value);
+    }
   }, [value, key]);
   return [value, setValue];
 };
