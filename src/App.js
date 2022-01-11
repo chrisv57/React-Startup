@@ -2,7 +2,7 @@ import * as React from "react";
 import axios from "axios";
 
 import styled from "styled-components";
-
+import {ReactComponent as Cross} from './cross.svg';
 const StyledContainer = styled.div`
 height: 100vw;
 padding: 20px;
@@ -40,6 +40,10 @@ transition: all 0.1s ease-in;
 &:hover {
 background: #171212;
 color: #ffffff;
+}
+&:hover > svg > g{
+  fill: #ffffff;
+  stroke: #ffffff;
 }
 `;
 const StyledButtonSmall = styled(StyledButton)`
@@ -268,7 +272,7 @@ const Item = ({ item, onRemoveItem }) => {
           type="button"
           onClick={() => onRemoveItem(item)}
         >
-          Dismiss
+          <Cross height="18px" width="18px" />
         </StyledButtonSmall>
       </StyledColumn>
     </StyledItem>
