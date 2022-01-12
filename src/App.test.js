@@ -1,33 +1,40 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import * as React from 'react';
 
-// test('renders learn react link', () => {
-//   render(<App />);
-//   const linkElement = screen.getByText(/learn react/i);
-//   expect(linkElement).toBeInTheDocument();
-// });
+import App, {
+  storiesReducer, SearchForm, InputWithLabel, List, Item,
+} from './App';
 
 
-// The “describe” block is our test suite, and the “test” blocks are our test cases.
+const storyOne = {
+  title: 'React',
+  url: 'https://reactjs.org/',
+  author: 'Jordan Walke',
+  num_comments: 3,
+  points: 4,
+  objectID: 0,
+};
 
-describe('Something true and false',()=>{
-  test('true to be true',()=>{
-    expect(true).toBeTruthy();
-  });
+const storyTwo = {
+  title: 'Redux',
+  url: 'https://redux.js.org/',
+  author: 'Dan Abramov, Andrew Clark',
+  num_comments: 2,
+  points: 5,
+  objectID: 1,
+};
 
-  test('false to be false',()=>{
-  expect(false).toBeFalsy();
+const stories = [storyOne,storyTwo];
+
+describe('storiesReducer',()=>{
+  test('remove a story from the list',()=>{
+    const action = {type: 'REMOVE_STORY', payload: storyOne};
+    const state = {data: stories,isLoading:false,isError:false};
+    const newState = storiesReducer(state,action);
+    const expectedState = {
+      data: [storyTwo],
+      isLoading:false,
+      isError:false,
+    }
+    expect(newState).toStrictEqual(expectedState);
   });
 });
-
-
-//Test blocks can also be written as "it".
-// describe('App Component',()=>{
-//   it('removes an item when clicking the dismiss button',()=>{
-
-//   });
-
-//   it('request initial stoires from the API',()=>{
-
-//   });
-// });
