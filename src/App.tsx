@@ -6,23 +6,67 @@ import { ReactComponent as Cross } from "./cross.svg";
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
-const useSemiPersistentState = (key, initalState) => {
+const useSemiPersistentState = (
+  key: string,
+  initalState: string
+): [string, (newValue: string) => void] => {
   const isMounted = React.useRef(false);
   const [value, setValue] = React.useState(
     localStorage.getItem(key) || initalState
   );
   React.useEffect(() => {
-    if(!isMounted.current){
-      isMounted.current=true;
-    }else{
-    console.log("A");
-    localStorage.setItem(key, value);
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      console.log("A");
+      localStorage.setItem(key, value);
     }
   }, [value, key]);
   return [value, setValue];
 };
 
-const storiesReducer = (state, action) => {
+type Story = {
+  objectID: string;
+  url: string;
+  title: string;
+  author: string;
+  num_comments: number;
+  points: number;
+};
+type Stories = Array<Story>;
+
+type StoriesState = {
+  data: Stories;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+interface StoriesFetchInitAction{
+  type: 'STORIES_FETCH_INIT';
+}
+
+interface StoriesFetchSuccessAction{
+  type: 'STORIES_FETCH_SUCCESS';
+  payload: Stories;
+}
+
+interface StoriesFetchFailureAction{
+  type: 'STORIES_FETCH_FAILURE';
+}
+
+interface StoriesFetchRemoveAction{
+  type: 'REMOVE_STORY';
+  payload: Story;
+}
+type StoriesAction = 
+  | StoriesFetchInitAction
+  | StoriesFetchSuccessAction
+  | StoriesFetchFailureAction
+  | StoriesFetchRemoveAction;
+
+
+
+const storiesReducer = (state: StoriesState, action: StoriesAction) => {
   switch (action.type) {
     case "STORIES_FETCH_INIT":
       return {
@@ -55,14 +99,17 @@ const storiesReducer = (state, action) => {
   }
 };
 
-const getSumComments = (stories) =>{
+const getSumComments = (stories) => {
   console.log('C');
 
   return stories.data.reduce(
-    (result,value) => result + value.num_comments,
+    (result, value) => result + value.num_comments,
     0
   );
 };
+
+
+
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
 
@@ -92,28 +139,28 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = React.useCallback((item) => {
+  const handleRemoveStory = React.useCallback((item: Story) => {
     dispatchStories({
       type: "REMOVE_STORY",
       payload: item,
     });
-  },[]);
+  }, []);
 
   // const handleSearch = (event) => {
   //   setSearchTerm(event.target.value);
   // }
 
-  const handleSearchInput = (event) => {
+  const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSearchSubmit = (event) => {
+  const handleSearchSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
     event.preventDefault();
   };
 
   console.log('B:APP');
-  const sumComments = React.useMemo(()=>getSumComments(stories), [
+  const sumComments = React.useMemo(() => getSumComments(stories), [
     stories,
   ]);
   return (
@@ -138,11 +185,18 @@ always evaluates to false. */}
     </div>
   );
 };
+
+type SearchFormProps = {
+  searchTerm: string;
+  onSearchInput: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchSubmit: (event: React.ChangeEvent<HTMLFormElement>) => void;
+}
+
 const SearchForm = ({
   searchTerm,
   onSearchInput,
   onSearchSubmit,
-}) => (
+}: SearchFormProps) => (
   <form onSubmit={onSearchSubmit} className="search-form">
 
     <InputWithLabel
@@ -164,18 +218,24 @@ const SearchForm = ({
 );
 
 
+type InputWithLabelProps = {
+  id: string;
+  value: string;
+  type?: string;
+  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) =>void;
+  isFocused?: boolean;
+  children: React.ReactNode;
+};
 
-// Declarative Implementation of autofocus for the inputField
 const InputWithLabel = ({
   id,
-  label,
   value,
   type = "text",
   onInputChange,
   isFocused,
   children,
-}) => {
-  const inputRef = React.useRef();
+}: InputWithLabelProps) => {
+  const inputRef = React.useRef<HTMLInputElement>(null!);
   React.useEffect(() => {
     if (isFocused && inputRef.current) {
       inputRef.current.focus();
@@ -202,19 +262,30 @@ const InputWithLabel = ({
   );
 };
 
+type ListProps = {
+  list: Stories;
+  onRemoveItem: (item: Story) => void;
+};
+
 //USing Spread and Rest Operators
-const List = React.memo(({ list, onRemoveItem }) => 
-  console.log('B:List') || (
+const List = ({ list, onRemoveItem }: ListProps) =>
+(
   <ul>
     {list.map((item) => (
       <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
     ))}
   </ul>
-  )
 );
 
-//Nested Destruction
-const Item = ({ item, onRemoveItem }) => {
+
+
+type itemProps = {
+  item: Story;
+  onRemoveItem: (item: Story) => void;
+};
+// The item is of type Story; the onRemoveItem function takes an item of type Story as an argument
+// and returns nothing.
+const Item = ({ item, onRemoveItem, }: itemProps) => {
   return (
     <li className="item">
       <span style={{ width: '40%' }}>
@@ -229,7 +300,7 @@ const Item = ({ item, onRemoveItem }) => {
           onClick={() => onRemoveItem(item)}
           className="button button_small"
         >
-         <Cross height="18px" width="18px" />
+          <Cross height="18px" width="18px" />
         </button>
       </span>
     </li>
