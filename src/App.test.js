@@ -4,6 +4,18 @@ import App, {
   storiesReducer, SearchForm, InputWithLabel, List, Item,
 } from './App';
 
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+} from '@testing-library/react';
+
+// describe('SearchForm',()=>{
+//   it('Submit from testing',()=>{
+//     const searchTerm = 
+//   });
+// });
 
 const storyOne = {
   title: 'React',
@@ -25,16 +37,75 @@ const storyTwo = {
 
 const stories = [storyOne,storyTwo];
 
-describe('storiesReducer',()=>{
-  test('remove a story from the list',()=>{
-    const action = {type: 'REMOVE_STORY', payload: storyOne};
-    const state = {data: stories,isLoading:false,isError:false};
-    const newState = storiesReducer(state,action);
-    const expectedState = {
-      data: [storyTwo],
-      isLoading:false,
-      isError:false,
-    }
-    expect(newState).toStrictEqual(expectedState);
+// describe('storiesReducer',()=>{
+//   test('remove a story from the list',()=>{
+//     const action = {type: 'REMOVE_STORY', payload: storyOne};
+//     const state = {data: stories,isLoading:false,isError:false};
+//     const newState = storiesReducer(state,action);
+//     const expectedState = {
+//       data: [storyTwo],
+//       isLoading:false,
+//       isError:false,
+//     }
+//     expect(newState).toStrictEqual(expectedState);
+//   });
+// });
+
+describe('Item',()=>{
+  it('renders all properties',()=>
+  {
+    render(<Item item = {storyOne}/>);
+
+    expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+    expect(screen.getByText('React')).toHaveAttribute(
+      'href',
+      'https://reactjs.org/'
+    );
   });
+  test('render a clickable dismss button',()=>{
+    render(<Item item = {storyOne}/>);
+    expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  test('clicking the dismiss button calls the callback handler',()=>{
+    const handleRemoveItem = jest.fn();
+    render(<Item item = {storyOne} onRemoveItem={handleRemoveItem} />);
+    fireEvent.click(screen.getByRole('button'));
+    expect(handleRemoveItem).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('SearchForm',()=>{
+  const SearchFormProps = {
+    searchTerm: 'React',
+    onSearchInput: jest.fn(),
+    onSearchSubmit: jest.fn(),
+  };
+  test('renders the input field with its value',()=>{
+    render(<SearchForm{...SearchFormProps} />);
+
+    expect(screen.getByDisplayValue('React')).toBeInTheDocument();
+    // screen.debug();
+  });
+
+
+
+  test('renders the correct label',()=>{
+    render(<SearchForm{...SearchFormProps}/>);
+    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+  });
+  
+  // test('calls onSearchInput on input field change', () => {
+  //   render(<SearchForm {...SearchFormProps} />);
+  //   fireEvent.change(screen.getByDisplayValue('React'), {
+  //   target: { value: 'Redux' },
+  //   });
+  //   expect(SearchFormProps.onSearchInput).toHaveBeenCalledTimes(1);
+  //   });
+
+  // test('calls onSearchSubmit on button submit click',()=>{
+  //   render(<SearchForm{...SearchFormProps}/>);
+  //   fireEvent.submit(screen.getByRole('button'));
+  //   expect(SearchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
+  // });
 });
