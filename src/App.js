@@ -55,8 +55,14 @@ const storiesReducer = (state, action) => {
   }
 };
 
-//A
+const getSumComments = (stories) =>{
+  console.log('C');
 
+  return stories.data.reduce(
+    (result,value) => result + value.num_comments,
+    0
+  );
+};
 const App = () => {
   const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
 
@@ -86,12 +92,12 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  const handleRemoveStory = (item) => {
+  const handleRemoveStory = React.useCallback((item) => {
     dispatchStories({
       type: "REMOVE_STORY",
       payload: item,
     });
-  };
+  },[]);
 
   // const handleSearch = (event) => {
   //   setSearchTerm(event.target.value);
@@ -106,10 +112,14 @@ const App = () => {
     event.preventDefault();
   };
 
-
+  console.log('B:APP');
+  const sumComments = React.useMemo(()=>getSumComments(stories), [
+    stories,
+  ]);
   return (
     <div className="container">
       <h1 className="headline-primary">Hello React</h1>
+      <h1>Number of Comments {sumComments} </h1>
 
       {/* <Search /> */}
       <SearchForm
@@ -193,12 +203,14 @@ const InputWithLabel = ({
 };
 
 //USing Spread and Rest Operators
-const List = ({ list, onRemoveItem }) => (
+const List = React.memo(({ list, onRemoveItem }) => 
+  console.log('B:List') || (
   <ul>
     {list.map((item) => (
       <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
     ))}
   </ul>
+  )
 );
 
 //Nested Destruction
