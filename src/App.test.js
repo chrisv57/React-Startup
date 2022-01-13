@@ -54,52 +54,52 @@ const stories = [storyOne,storyTwo];
 //   });
 // });
 
-describe('App',()=>{
-  test('succeeds fetching data',async()=>{
-    const promise = Promise.resolve({
-      data:{
-        hits:stories,
-      },
-    });
-    axios.get.mockImplementationOnce (()=>promise);
-    render(<App />);
-    expect(screen.queryByText(/Loading/)).toBeInTheDocument();
-    screen.debug();
-    await act(()=>promise);
-    expect(screen.queryByText(/Loading/)).toBeNull();
+// describe('App',()=>{
+//   test('succeeds fetching data',async()=>{
+//     const promise = Promise.resolve({
+//       data:{
+//         hits:stories,
+//       },
+//     });
+//     axios.get.mockImplementationOnce (()=>promise);
+//     render(<App />);
+//     expect(screen.queryByText(/Loading/)).toBeInTheDocument();
+//     screen.debug();
+//     await act(()=>promise);
+//     expect(screen.queryByText(/Loading/)).toBeNull();
     
-    expect(screen.getByText('React')).toBeInTheDocument();
-    expect(screen.getByText('Redux')).toBeInTheDocument();
-    expect(screen.getAllByText('cross.svg').length).toBe(2);
-  });
-  test('fails fetching data',async()=>{
-    const promise = Promise.reject();
-    axios.get.mockImplementationOnce(()=>promise);
-    render (<App/>);
-    expect(screen.getByText(/Loading/)).toBeInTheDocument();
-    try{
-      await act(()=>promise);
-    }catch(error){
-      expect(screen.queryByText(/Loading/)).toBeNull();
-      expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
-    }
-  });
-  test('removes a story',async()=>{
-    const promise = Promise.resolve({
-      data: {
-        hits: stories,
-      },
-    });
-    axios.get.mockImplementationOnce(()=>promise);
-    render(<App />);
-    await act(()=>promise);
-    expect(screen.getAllByText('cross.svg').length).toBe(2);
-    expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
-    fireEvent.click(screen.getAllByText('cross.svg')[0]);
-    expect(screen.getAllByText('cross.svg').length).toBe(1);
-    expect(screen.queryByText('Jordan Walke')).toBeNull();
-  })
-});
+//     expect(screen.getByText('React')).toBeInTheDocument();
+//     expect(screen.getByText('Redux')).toBeInTheDocument();
+//     expect(screen.getAllByText('cross.svg').length).toBe(2);
+//   });
+//   test('fails fetching data',async()=>{
+//     const promise = Promise.reject();
+//     axios.get.mockImplementationOnce(()=>promise);
+//     render (<App/>);
+//     expect(screen.getByText(/Loading/)).toBeInTheDocument();
+//     try{
+//       await act(()=>promise);
+//     }catch(error){
+//       expect(screen.queryByText(/Loading/)).toBeNull();
+//       expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
+//     }
+//   });
+//   test('removes a story',async()=>{
+//     const promise = Promise.resolve({
+//       data: {
+//         hits: stories,
+//       },
+//     });
+//     axios.get.mockImplementationOnce(()=>promise);
+//     render(<App />);
+//     await act(()=>promise);
+//     expect(screen.getAllByText('cross.svg').length).toBe(2);
+//     expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+//     fireEvent.click(screen.getAllByText('cross.svg')[0]);
+//     expect(screen.getAllByText('cross.svg').length).toBe(1);
+//     expect(screen.queryByText('Jordan Walke')).toBeNull();
+//   })
+// });
 
 // describe('Item',()=>{
 //   it('renders all properties',()=>
@@ -125,18 +125,24 @@ describe('App',()=>{
 //   });
 // });
 
-// describe('SearchForm',()=>{
-//   const SearchFormProps = {
-//     searchTerm: 'React',
-//     onSearchInput: jest.fn(),
-//     onSearchSubmit: jest.fn(),
-//   };
-//   test('renders the input field with its value',()=>{
-//     render(<SearchForm{...SearchFormProps} />);
+describe('SearchForm',()=>{
+  const SearchFormProps = {
+    searchTerm: 'React',
+    onSearchInput: jest.fn(),
+    onSearchSubmit: jest.fn(),
+  };
 
-//     expect(screen.getByDisplayValue('React')).toBeInTheDocument();
-//     // screen.debug();
-//   });
+  test('render snapshot',()=>{
+    const {container} = render(<SearchForm{...SearchFormProps} />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  // test('renders the input field with its value',()=>{
+  //   render(<SearchForm{...SearchFormProps} />);
+
+  //   expect(screen.getByDisplayValue('React')).toBeInTheDocument();
+  //   // screen.debug();
+  // });
 
 
 
@@ -158,4 +164,4 @@ describe('App',()=>{
   //   fireEvent.submit(screen.getByRole('button'));
   //   expect(SearchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
   // });
-// });
+});
