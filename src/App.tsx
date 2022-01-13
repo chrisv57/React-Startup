@@ -14,7 +14,7 @@ const useSemiPersistentState = (
   const [value, setValue] = React.useState(
     localStorage.getItem(key) || initalState
   );
-  React.useEffect(() => {
+  React.useEffect(() => {l
     if (!isMounted.current) {
       isMounted.current = true;
     } else {
