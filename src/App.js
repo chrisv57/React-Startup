@@ -1,5 +1,8 @@
 import * as React from "react";
 import axios from "axios";
+import { SearchForm } from './SearchForm';
+import {List} from './List';
+
 
 function getTitle(title) {
   return title;
@@ -106,11 +109,11 @@ const App = () => {
       <h1>Hey {getTitle("React")}</h1>
 
       {/* <Search /> */}
-    <SearchForm 
-      searchTerm={searchTerm}
-      onSearchInput={handleSearchInput}
-    onSearchSubmit={handleSearchSubmit}
-    />
+      <SearchForm
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+        onSearchSubmit={handleSearchSubmit}
+      />
       {/* In JavaScript, a true && 'Hello World' always evaluates to ‘Hello World’. A false && 'Hello World'
 always evaluates to false. */}
       {stories.isError && <p>Something went wrong....</p>}
@@ -120,88 +123,6 @@ always evaluates to false. */}
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
     </div>
-  );
-};
-
-const SearchForm = ({
-  searchTerm,
-  onSearchInput,
-  onSearchSubmit,
-}) => (
-<form onSubmit={handleSearchSubmit}>
-
-<InputWithLabel
-  id="search"
-  value={searchTerm}
-  isFocused
-  onInputChange={handleSearchInput}
->
-  <strong>Search:</strong>
-</InputWithLabel>
-<button type="submit" disabled={!searchTerm}>
-  Submit
-</button>
-
-</form>
-
-);
-
-// Declarative Implementation of autofocus for the inputField
-const InputWithLabel = ({
-  id,
-  label,
-  value,
-  type = "text",
-  onInputChange,
-  isFocused,
-  children,
-}) => {
-  const inputRef = React.useRef();
-  React.useEffect(() => {
-    if (isFocused && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isFocused]);
-  return (
-    <>
-      <label htmlFor={id}>{children}</label>
-      &nbsp;
-      <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        value={value}
-        onChange={onInputChange}
-      />
-    </>
-  );
-};
-
-//USing Spread and Rest Operators
-const List = ({ list, onRemoveItem }) => (
-  <ul>
-    {list.map((item) => (
-      <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
-    ))}
-  </ul>
-);
-
-//Nested Destruction
-const Item = ({ item, onRemoveItem }) => {
-  return (
-    <li>
-      <span>
-        <a href={item.url}>{item.title}</a>
-      </span>
-      <span>{item.author}</span>
-      <span>{item.num_comments}</span>
-      <span>{item.points}</span>
-      <span>
-        <button type="button" onClick={() => onRemoveItem(item)}>
-          Dismiss
-        </button>
-      </span>
-    </li>
   );
 };
 export default App;
