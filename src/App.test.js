@@ -1,4 +1,6 @@
 import * as React from 'react';
+import axios from "axios";
+jest.mock('axios');
 
 import App, {
   storiesReducer, SearchForm, InputWithLabel, List, Item,
@@ -10,6 +12,7 @@ import {
   fireEvent,
   act,
 } from '@testing-library/react';
+import { isPartiallyEmittedExpression } from 'typescript';
 
 // describe('SearchForm',()=>{
 //   it('Submit from testing',()=>{
@@ -51,49 +54,96 @@ const stories = [storyOne,storyTwo];
 //   });
 // });
 
-describe('Item',()=>{
-  it('renders all properties',()=>
-  {
-    render(<Item item = {storyOne}/>);
-
+describe('App',()=>{
+  test('succeeds fetching data',async()=>{
+    const promise = Promise.resolve({
+      data:{
+        hits:stories,
+      },
+    });
+    axios.get.mockImplementationOnce (()=>promise);
+    render(<App />);
+    expect(screen.queryByText(/Loading/)).toBeInTheDocument();
+    screen.debug();
+    await act(()=>promise);
+    expect(screen.queryByText(/Loading/)).toBeNull();
+    
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('Redux')).toBeInTheDocument();
+    expect(screen.getAllByText('cross.svg').length).toBe(2);
+  });
+  test('fails fetching data',async()=>{
+    const promise = Promise.reject();
+    axios.get.mockImplementationOnce(()=>promise);
+    render (<App/>);
+    expect(screen.getByText(/Loading/)).toBeInTheDocument();
+    try{
+      await act(()=>promise);
+    }catch(error){
+      expect(screen.queryByText(/Loading/)).toBeNull();
+      expect(screen.queryByText(/went wrong/)).toBeInTheDocument();
+    }
+  });
+  test('removes a story',async()=>{
+    const promise = Promise.resolve({
+      data: {
+        hits: stories,
+      },
+    });
+    axios.get.mockImplementationOnce(()=>promise);
+    render(<App />);
+    await act(()=>promise);
+    expect(screen.getAllByText('cross.svg').length).toBe(2);
     expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
-    expect(screen.getByText('React')).toHaveAttribute(
-      'href',
-      'https://reactjs.org/'
-    );
-  });
-  test('render a clickable dismss button',()=>{
-    render(<Item item = {storyOne}/>);
-    expect(screen.getByRole('button')).toBeInTheDocument();
-  });
-
-  test('clicking the dismiss button calls the callback handler',()=>{
-    const handleRemoveItem = jest.fn();
-    render(<Item item = {storyOne} onRemoveItem={handleRemoveItem} />);
-    fireEvent.click(screen.getByRole('button'));
-    expect(handleRemoveItem).toHaveBeenCalledTimes(1);
-  });
+    fireEvent.click(screen.getAllByText('cross.svg')[0]);
+    expect(screen.getAllByText('cross.svg').length).toBe(1);
+    expect(screen.queryByText('Jordan Walke')).toBeNull();
+  })
 });
 
-describe('SearchForm',()=>{
-  const SearchFormProps = {
-    searchTerm: 'React',
-    onSearchInput: jest.fn(),
-    onSearchSubmit: jest.fn(),
-  };
-  test('renders the input field with its value',()=>{
-    render(<SearchForm{...SearchFormProps} />);
+// describe('Item',()=>{
+//   it('renders all properties',()=>
+//   {
+//     render(<Item item = {storyOne}/>);
 
-    expect(screen.getByDisplayValue('React')).toBeInTheDocument();
-    // screen.debug();
-  });
+//     expect(screen.getByText('Jordan Walke')).toBeInTheDocument();
+//     expect(screen.getByText('React')).toHaveAttribute(
+//       'href',
+//       'https://reactjs.org/'
+//     );
+//   });
+//   test('render a clickable dismss button',()=>{
+//     render(<Item item = {storyOne}/>);
+//     expect(screen.getByRole('button')).toBeInTheDocument();
+//   });
+
+//   test('clicking the dismiss button calls the callback handler',()=>{
+//     const handleRemoveItem = jest.fn();
+//     render(<Item item = {storyOne} onRemoveItem={handleRemoveItem} />);
+//     fireEvent.click(screen.getByRole('button'));
+//     expect(handleRemoveItem).toHaveBeenCalledTimes(1);
+//   });
+// });
+
+// describe('SearchForm',()=>{
+//   const SearchFormProps = {
+//     searchTerm: 'React',
+//     onSearchInput: jest.fn(),
+//     onSearchSubmit: jest.fn(),
+//   };
+//   test('renders the input field with its value',()=>{
+//     render(<SearchForm{...SearchFormProps} />);
+
+//     expect(screen.getByDisplayValue('React')).toBeInTheDocument();
+//     // screen.debug();
+//   });
 
 
 
-  test('renders the correct label',()=>{
-    render(<SearchForm{...SearchFormProps}/>);
-    expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
-  });
+//   test('renders the correct label',()=>{
+//     render(<SearchForm{...SearchFormProps}/>);
+//     expect(screen.getByLabelText(/Search/)).toBeInTheDocument();
+//   });
   
   // test('calls onSearchInput on input field change', () => {
   //   render(<SearchForm {...SearchFormProps} />);
@@ -108,4 +158,4 @@ describe('SearchForm',()=>{
   //   fireEvent.submit(screen.getByRole('button'));
   //   expect(SearchFormProps.onSearchSubmit).toHaveBeenCalledTimes(1);
   // });
-});
+// });
